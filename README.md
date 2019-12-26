@@ -1,2 +1,2 @@
 # fraud-detection-for-mobile-transactions
-A fraud detection model for mobile  transactions
+A machine learning model for fraud detection in mobile  transactions
