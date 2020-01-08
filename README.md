@@ -1,29 +1,10 @@
 
-
-
 ![fraud](https://raw.githubusercontent.com/fcamuz/fraud-detection-for-mobile-transactions/master/images/Slide1.png)
 
 # A machine learning model for fraud detection in mobile  transactions
 
 ### Project Overview
 In this project I trained several models to detect fraud transactions. I have started 5 baseline models. Those are, LogisticRegression, KNeighborsClassifier, RandomForestClassifier, XGBClassifier, SupportVectorMachine Classifier. I continued to optimize top two models based on their train and test accuracy result. XGBoost and RandomForest Models. I have done five iterations including grid search on hyperparameters, balancing the labels by SMOTE and subsampling from the original dataset. Both RandomForest and XGBoost model had over 99% accuracy on the data that includes all frauds and some random safe data. The data was still imbalanced so I did SMOTE over this dataset as well. At the end of those iterations, **XGBoost model had 99% accuracy** on both train and test sets.  
-
-![](bank.png)
-### Project Steps
-
-- 1.Loading Data and EDA
-- 2.Feature Engineering
-- 3.Machine Learning
-    - 3.1. Baseline Models
-    - 3.2. Grid Search for Best Hyper-parameter
-    - 3.3. Dealing with Unbalanced Data
-        - 3.3.1. Balancing Data via Resambling with SMOTE
-        - 3.3.2. Subsampling Data from the Original Dataset
-        - 3.3.3 Performing SMOTE on the New Data
-- 4.Machine Learning Pipeline
-- 5.Feature Importance
-- 6.Conclusion
-- 7.Future Works
 
 ### Data
 I used Kaggle's Paysim dataset. It simulates mobile money transactions based on a sample of real transactions extracted from one month of financial logs from a mobile money service implemented in an African country. The original logs were provided by a multinational company, who is the provider of the mobile financial service which is currently running in more than 14 countries all around the world.
@@ -53,6 +34,25 @@ https://www.kaggle.com/ntnu-testimon/paysim1
 **isFraud** - This is the transactions made by the fraudulent agents inside the simulation. In this specific dataset the fraudulent behavior of the agents aims to profit by taking control or customers accounts and try to empty the funds by transferring to another account and then cashing out of the system.
 
 **isFlaggedFraud** - The business model aims to control massive transfers from one account to another and flags illegal attempts. An illegal attempt in this dataset is an attempt to transfer more than 200.000 in a single transaction.
+
+![](bank.png)
+### Project Steps
+
+- 1.Loading Data and EDA
+- 2.Feature Engineering
+- 3.Machine Learning
+    - 3.1. Baseline Models
+    - 3.2. Grid Search for Best Hyper-parameter
+    - 3.3. Dealing with Unbalanced Data
+        - 3.3.1. Balancing Data via Resambling with SMOTE
+        - 3.3.2. Subsampling Data from the Original Dataset
+        - 3.3.3 Performing SMOTE on the New Data
+- 4.Machine Learning Pipeline
+- 5.Feature Importance
+- 6.Conclusion
+- 7.Future Works
+
+
 
 ## 1.Loading Data and EDA
 ```python
@@ -106,7 +106,7 @@ plt.legend()
 
 Eventhough safe transactions slows down in 3rd and 4th day and after 16th day of the month, fraud transactions happens at a steady pace. Especially in the second half of the month there are much less safe transactions but number of fraud transactions does not decrease at all.
 
-### Hourly Transaction Amounts¶
+### Hourly Transaction Amounts
 ```python
 #just use small portion of data to scatterplot the transaction happens every hour and their amount. 
 smalldata=data.sample(n=100000, random_state=1)
