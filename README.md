@@ -1,10 +1,9 @@
-# fraud-detection-for-mobile-transactions
 
-A machine learning model for fraud detection in mobile  transactions
+
+
 ![fraud](https://raw.githubusercontent.com/fcamuz/fraud-detection-for-mobile-transactions/master/images/Slide1.png)
 
-# FRAUD DETECTION on ONLINE TRANSACTIONS 
-
+# A machine learning model for fraud detection in mobile  transactions
 
 ### Project Overview
 In this project I trained several models to detect fraud transactions. I have started 5 baseline models. Those are, LogisticRegression, KNeighborsClassifier, RandomForestClassifier, XGBClassifier, SupportVectorMachine Classifier. I continued to optimize top two models based on their train and test accuracy result. XGBoost and RandomForest Models. I have done five iterations including grid search on hyperparameters, balancing the labels by SMOTE and subsampling from the original dataset. Both RandomForest and XGBoost model had over 99% accuracy on the data that includes all frauds and some random safe data. The data was still imbalanced so I did SMOTE over this dataset as well. At the end of those iterations, **XGBoost model had 99% accuracy** on both train and test sets.  
@@ -55,7 +54,7 @@ https://www.kaggle.com/ntnu-testimon/paysim1
 
 **isFlaggedFraud** - The business model aims to control massive transfers from one account to another and flags illegal attempts. An illegal attempt in this dataset is an attempt to transfer more than 200.000 in a single transaction.
 
-1. Loading Data and EDA¶
+## 1.Loading Data and EDA
 ```python
 import os
 import math
@@ -84,7 +83,7 @@ False
 
 There are no duplicate rows, so we do not need to worry about duplicated data.
 
-### Examine the data by the labels¶
+### Examine the data by the labels
 I will filter the data by the labels and examine two groups compairing each other.
 ```python
 
@@ -104,7 +103,6 @@ plt.legend()
 
 ![fraud](https://raw.githubusercontent.com/fcamuz/fraud-detection-for-mobile-transactions/master/images/Slide6.png)
 
-￼ 
 
 Eventhough safe transactions slows down in 3rd and 4th day and after 16th day of the month, fraud transactions happens at a steady pace. Especially in the second half of the month there are much less safe transactions but number of fraud transactions does not decrease at all.
 
@@ -140,14 +138,15 @@ ax = sns.scatterplot(x="step", y="amount", color='orange',
 
 Fraud transactions does not show that significant pattern like safe ones in terms of number of accurance. They happen every hour almast in the same frequency. There are more fraud transactions in low amounts and less in high amount. But the pattern does not change time to time.
 
-### Transaction Amount Distributions¶
+### Transaction Amount Distributions
 
 ￼There is an interesting peak on 1M$. Lets see how many fraud transactions happens at 1M$. Safe transactions also more often in the low amounts . There is a peek in 1M dolar but above that the frequency decreases.
 
-# fraud transactions amount value counts
 ```python
+# fraud transactions amount value counts
 fraud.amount.value_counts()
-Out[22]:
+```
+```
 10000000.00    287
 0.00            16
 429257.45        4
@@ -171,7 +170,7 @@ Fraud transaction happens in a large range such as $119 to 10M. The Frequency di
 
 They are definetely not correct data. But it might have some sort of value such as creating some noise in the transaction traffic to make the real fraud not to be noticed. For that reason I will keep this data.
 
-### Type of Transactions¶
+### Type of Transactions
 
 ```python
 #checking type of fraud transactions
@@ -185,7 +184,7 @@ Name: type, dtype: int64
 Fraud activities only happens with transfer and cash_out transactions. Debit usage is very safe. It will be better to use only Transfer and Cash_out transaction data for our model since the other types has no fraud.
 
 
-### Rate of Fraud Transactions¶
+### Rate of Fraud Transactions
 ```python
 #proportion of number of frauds 
 data.isFraud.value_counts()[1]/(data.isFraud.value_counts()[0]+data.isFraud.value_counts()[1])
@@ -206,7 +205,7 @@ Total money was stolen is 0.1% of safe transaction amount.
 
 
 
-## 2. Feature Engineering¶
+## 2. Feature Engineering
 
 First only get Transfer and Cash_out transaction data¶
 Since fraud transactions happens only in these type of transactions, I will use only that data.
@@ -251,7 +250,7 @@ df.loc[df.type == 'TRANSFER', 'type'] = 0
 
 There is something wrong with the balance information. Eventhough a transaction going on both old and new balance looks '0'. But I will ignore it for now.
 
-## 3. Machine Learning¶
+## 3. Machine Learning
 ```python
 from sklearn.model_selection import train_test_split # import train_test_split function
 from sklearn.linear_model import LogisticRegression # import LogisticRegression
@@ -274,7 +273,7 @@ target =df.isFraud
 # split the data into train and test
 X_train, X_test, y_train, y_test = train_test_split(features, target, test_size=0.2)
 ```
-### 3.1. Baseline Models¶
+### 3.1. Baseline Models
 First, I will run five classification madel with their default parameter to see how each one perform. I put all the classifers into a list and train them in a loop. ml_func function handles all train, evaluation and storing the performence metrics. Also, the data is highly unbalanced, the positive class (frauds) account for 0.01% of all transactions. So I will be measuring the accuracy using the Area Under the Precision-Recall Curve (AUPRC). Confusion matrix accuracy is not meaningful for unbalanced classification.
 ```python
 # General function to run classifier with default parameters to get baseline model
@@ -312,7 +311,7 @@ for algoritm in algoritms:
 ![fraud](https://raw.githubusercontent.com/fcamuz/fraud-detection-for-mobile-transactions/master/images/Slide11.png)
 
 
-### 3.2. Grid Search for Best Hyper-Parameter¶
+### 3.2. Grid Search for Best Hyper-Parameter
 In the above report we see the best training accuracy is from Random Forest Classifier. On the other hand the best test accuracy is from XGBoost Classifier. I would like to optimize these two model with grid search of multiple parameter values. Grid earch will help me to figure our best parameters to pass to the model to get the most accurate result. I will create a function for grid search named best_param. It will take parameter values and the classifer and print our the best parameter combinations. I will only run Random Forest and XGBoost models for the rest of the project since they are the best two.
 ```python
 #A general function for grdi search
@@ -379,7 +378,7 @@ Out[43]:
  'max_depth': 10,
  'n_estimators': 100}
 ```
-### Run models with their best parameters¶
+### Run models with their best parameters
 ```python
 #a function to train and evaluate a  model with given datasets 
 #it also prints the accuracy scores 
@@ -464,9 +463,9 @@ XGBoost definetely works better with the best parameters set.
 
 Randomforest classifier might be effected the skewness of the target. Our data is quite unbalanced. That skewness can be taken care by resampling the data via SMOTE.
 
-### 3.3. Dealing with Unbalanced Data¶
+### 3.3. Dealing with Unbalanced Data
 
-#### 3.3.1. Balancing Data via Oversampling with SMOTE¶
+#### 3.3.1. Balancing Data via Oversampling with SMOTE
 
 ```python
 from imblearn.over_sampling import SMOTE
@@ -541,7 +540,7 @@ weighted avg       0.99      0.99      0.99     39891
 
 Wouw, the performence increased dramatically for both models. Having almost 100% accuracy is suspicious though. It is probably because of the synthetic data that SMOTE created. Since there are only small amount of instances for fraud class, it created too many of the same data. Model memorize that pattern and gives perfect result on the test set. Because, there is highly possible that same data points are also availble in the test set.
 
-#### 3.3.2. Subsampling Data from the Original Dataset¶
+#### 3.3.2. Subsampling Data from the Original Dataset
 
 I had a huge dataset at the beginning and I did random sampling to reduce the computational laod. But I have a lot more natural fraud data point in this dataset that I can use. Insted of creating syntetic data I will choose those pints and randomly choose the safe transaction data points to get less skewed sample for my models.
 
@@ -575,9 +574,9 @@ Name: isFraud, dtype: int64
 ```
 Ok, the new dataset with totally natural data is ready for going in to our models. The proportion is still not 50% but good enough to train a model.
 
-Running models with subsampled organic data¶
+Running models with subsampled organic data
 ```python
-#Slide the target and features from the dataset
+#Slice the target and features from the dataset
 features2=df3.drop('isFraud', axis=1)
 target2 =df3.isFraud
 # split the data into train and test
@@ -627,7 +626,7 @@ weighted avg       0.99      0.99      0.99     11643
 
 The results look much realistic. I can still use SMOTE on this new dataset and see how it effects the results now. But XGBoost model seems to be working clearly better in any set of data so far. Eventhough we have better proportion we still have unbalanced data. We can permofm oversampling on this new data to have more fraud data.
 
-#### 3.3.3 Performing SMOTE on the New Data¶
+#### 3.3.3 Performing SMOTE on the New Data
 ```python
 from imblearn.over_sampling import SMOTE
 
@@ -694,7 +693,7 @@ weighted avg       0.99      0.99      0.99     11643
 ```
 XGBoost improved a little bit more bu t Random Forest accuracy decreased with this new data. I can say that Random Forest can not handling too many repeted data for the sake of balancing
 
-## 4. Machine Learning Pipeline¶
+## 4. Machine Learning Pipeline
 
 Pipelines are extremely useful tools to write clean and manageable code for machine learning.Creating a model takes a many steps such as clean our data, transform it, potentially use feature selection, and then run a machine learning algorithm. Using pipelines, we can do all these steps in one go!
 ```python
@@ -742,7 +741,7 @@ Best params:
 ```
 ![fraud](https://raw.githubusercontent.com/fcamuz/fraud-detection-for-mobile-transactions/master/images/Slide12.png)
 
-## 5. Feature Importance¶
+## 5. Feature Importance
 
 Lets check whick features are the most influencial ones for both model.
 ```python
@@ -762,10 +761,11 @@ ax.set_title('Feature Importance Order', size = 16);
 ```
 ![fraud](https://raw.githubusercontent.com/fcamuz/fraud-detection-for-mobile-transactions/master/images/Slide13.png)
 ￼ 
+
 oldbalanceOrg and newbalanceDest are the major indicators XGboost model.
 
 
-## 6. Conclusion¶
+## 6. Conclusion
 
 Performence has increased after five iterations and finally reached to; 
 ### 99% accuracy with XGBoost Classifier and Balanced Data
